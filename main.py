@@ -10,7 +10,7 @@ import pandas as pd
 
 app = FastAPI()
 
-df = read_csv('C:\Henry\proyecto individual\df_arreglado.csv')
+df = read_csv('df_arreglado.csv')
 
 
 @app.get('/peliculas_mes/{mes}')
