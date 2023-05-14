@@ -8,15 +8,19 @@ from pandas import read_csv
 
 import pandas as pd
 
+import locale
+
+locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+
 app = FastAPI()
 
 df = read_csv('df_arreglado.csv')
 
 
 @app.get('/peliculas_mes/{mes}')
-def peliculas_mes(mes:str):
+def peliculas_mes(mes):
     fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
-    n_mes= fechas[fechas.dt.month_name(locale = 'es')==mes.capitalize()]
+    n_mes = fechas[fechas.dt.strftime('%B').str.capitalize() == mes.capitalize()]
     respuesta = n_mes.shape[0]
     return {'mes':mes, 'cantidad':respuesta}
 
