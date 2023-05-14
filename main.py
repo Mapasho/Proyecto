@@ -10,19 +10,32 @@ import pandas as pd
 
 import locale
 
-locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
-
 app = FastAPI()
 
 df = read_csv('df_arreglado.csv')
 
 
 @app.get('/peliculas_mes/{mes}')
-def peliculas_mes(mes):
-    meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+def peliculas_mes(mes: str) -> dict:
+    
+
+    months_translated= {
+    'enero': 'January',
+    'febrero': 'February',
+    'marzo': 'March',
+    'abril': 'April',
+    'mayo': 'May',
+    'junio': 'June',
+    'julio': 'July',
+    'agosto': 'August',
+    'septiembre': 'September',
+    'octubre': 'October',
+    'noviembre': 'November',
+    'diciembre': 'December'}  
     fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
-    n_mes = fechas[fechas.dt.strftime('%B').str.capitalize() == mes.capitalize()]
+    n_mes = fechas[fechas.dt.strftime('%B').str.capitalize() == months_translated[str(mes).lower()]]
     respuesta = n_mes.shape[0]
+    print(n_mes)
     return {'mes':mes, 'cantidad':respuesta}
 
 @app.get('/peliculas_dis/{dis}')
