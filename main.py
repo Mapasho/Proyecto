@@ -8,8 +8,6 @@ from pandas import read_csv
 
 import pandas as pd
 
-import locale
-
 
 app = FastAPI()
 
@@ -39,23 +37,21 @@ def peliculas_mes(mes: str) -> dict:
     print(n_mes)
     return {'mes':mes, 'cantidad':respuesta}
 
-@app.get('/peliculas_dis/{dis}')
-def peliculas_dia(dia):
+@app.get('/peliculas_dia/{dia}')
+def peliculas_mes(dia: str) -> dict:
 
-    dias_permitidos = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
-
-    if dia.lower() not in dias_permitidos:
-        return {'error': 'El día proporcionado no es válido.'}
-
-    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
-
-    fechas = pd.to_datetime(df['release_date'], format='%Y-%m-%d')
-
-    n_dia = fechas[fechas.dt.day_name(locale='es') == dia.capitalize()]
-
-    cantidad = n_dia.shape[0]
-
-    return {'dia': dia.capitalize(), 'cantidad': cantidad}
+    day_translated= {
+    'lunes': 'Monday',
+    'martes': 'Tuesday',
+    'miercoles': 'Wednesday',
+    'jueves': 'Thursday',
+    'viernes': 'Friday',
+    'sabado': 'Saturday',
+    'domingo': 'Sunday'}   
+    fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
+    n_dia = fechas[fechas.dt.strftime('%A').str.capitalize() == day_translated[str(dia).lower()]]
+    respuesta = n_dia.shape[0]
+    return {'mes':dia, 'cantidad':respuesta}
 
 
 @app.get('/franquicia/{franquicia}')
