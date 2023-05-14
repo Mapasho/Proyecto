@@ -25,9 +25,9 @@ def peliculas_mes(mes):
     return {'mes':mes, 'cantidad':respuesta}
 
 @app.get('/peliculas_dis/{dis}')
-def peliculas_dia(dia:str):
+def peliculas_dia(dia):
     fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
-    n_dia= fechas[fechas.dt.day_name(locale = 'es')==dia.capitalize()]
+    n_dia = fechas[fechas.dt.strftime('%A').str.capitalize() == dia.capitalize()]
     respuesta = n_dia.shape[0]
     return {'dia':dia, 'cantidad':respuesta}
 
