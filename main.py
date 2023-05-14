@@ -19,6 +19,7 @@ df = read_csv('df_arreglado.csv')
 
 @app.get('/peliculas_mes/{mes}')
 def peliculas_mes(mes):
+    meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
     n_mes = fechas[fechas.dt.strftime('%B').str.capitalize() == mes.capitalize()]
     respuesta = n_mes.shape[0]
@@ -26,10 +27,22 @@ def peliculas_mes(mes):
 
 @app.get('/peliculas_dis/{dis}')
 def peliculas_dia(dia):
+  
+    dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    
+    
+    if dia.capitalize() not in dias:
+        return f"El día {dia} no es válido. Intente con un día de la semana."
+    
+    
     fechas = pd.to_datetime(df['release_date'], format= '%Y-%m-%d')
     n_dia = fechas[fechas.dt.strftime('%A').str.capitalize() == dia.capitalize()]
+    
+    
     respuesta = n_dia.shape[0]
-    return {'dia':dia, 'cantidad':respuesta}
+    
+
+    return {'dia':dia.capitalize(), 'cantidad':respuesta}
 
 @app.get('/franquicia/{franquicia}')
 def franquicia(franquicia:str):
