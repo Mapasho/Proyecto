@@ -8,10 +8,27 @@ from pandas import read_csv
 
 import pandas as pd
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from sklearn.metrics.pairwise import linear_kernel
+
+
 
 app = FastAPI()
 
 df = read_csv('df_arreglado.csv')
+
+ml=df.sample(n=1000, random_state=42) # limita el ML
+
+tfidf= TfidfVectorizer(stop_words = 'english') # esta  funcion hace que no se detenga el codigo por algun tipo de error
+ml['overview'] = ml['overview'].fillna('') # este codigo rellena los nullos con espacios vacios
+tfidf_matrix = tfidf.fit_transform(ml['overview']) # entrena el modelo overwiew
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+ml.drop_duplicates(inplace=True)
+ml = ml.reset_index(drop=True)
+indices = pd.Series(ml.index, index=ml['title'])
+
+
 
 
 @app.get('/peliculas_mes/{mes}')
@@ -94,9 +111,14 @@ def retorno(pelicula: str) -> dict:
 
 # ML
 @app.get('/recomendacion/{titulo}')
-def recomendacion(titulo:str):
-    '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
-    return {'lista recomendada': respuesta}
+def recomendacion(titulo):
+    idx = indices[titulo]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key= lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:6]
+    movie_indices = [i[0] for i in sim_scores]
+    recommendations=list(ml['title'].iloc[movie_indices].str.title())
+    return {'lista recomendada': recommendations}
 
 
 @app.get("/items/{item_id}")
