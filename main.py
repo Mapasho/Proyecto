@@ -38,7 +38,7 @@ def peliculas_mes(mes: str) -> dict:
     return {'mes':mes, 'cantidad':respuesta}
 
 @app.get('/peliculas_dia/{dia}')
-def peliculas_mes(dia: str) -> dict:
+def peliculas_dia(dia: str) -> dict:
 
     day_translated= {
     'lunes': 'Monday',
