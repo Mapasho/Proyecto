@@ -34,5 +34,5 @@ Una vez realizado todo esto se utilizará [Render] a fin de comprobar que las co
 https://ariel-proyecto.onrender.com/docs
 
 
-# Conclusion:
+# Conclusión:
 El modelo de aprendizaje automático utilizado en la función de recomendación es un modelo de filtrado colaborativo basado en memoria que utiliza la matriz de valoraciones de las películas para calcular la similitud entre ellas.
